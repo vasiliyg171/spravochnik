@@ -783,31 +783,41 @@ searchInput.addEventListener('input', filterCards);
 sideCats.forEach(b => b.addEventListener('click', () => setFilter(b.dataset.filter)));
 document.addEventListener('keydown', e => { if (e.key === 'Escape') { document.getElementById('modal-overlay').classList.remove('open'); document.body.style.overflow=''; }});
 
+<script>
   function showModal(id) {
+    // Находим данные специалиста по id
     const p = data.find(item => item.id === id);
+    
     if (p) {
-        document.getElementById('m-name').innerText = p.name;
+        // Заполняем текстовые поля модального окна
+        document.getElementById('modal-name').innerText = p.name;
         document.getElementById('m-badge').innerText = p.specialty;
 
+        // Работаем с ссылкой на телефон
         const phoneLink = document.getElementById('m-contacts-link');
         if (p.phone) {
             phoneLink.innerText = p.phone;
+            // replace(/\D/g, '') удаляет всё, кроме цифр, для корректной ссылки tel:
             phoneLink.href = 'tel:' + p.phone.replace(/\D/g, ''); 
             phoneLink.style.display = 'inline';
         } else {
             phoneLink.style.display = 'none';
         }
 
+        // Вставляем описание или текст по умолчанию
         document.getElementById('modal-info-text').innerHTML = p.info || 'Информация уточняется';
+        
+        // Показываем окно и блокируем скролл основной страницы
         document.getElementById('modal-overlay').classList.add('open');
         document.body.style.overflow = 'hidden';
-    }
-}
+      }
+  }
 
-    function closeModal() {
-        document.getElementById('modal-overlay').classList.remove('open');
-        document.body.style.overflow = '';
-    }
+  // Функция для закрытия (если у вас её нет)
+  function closeModal() {
+      document.getElementById('modal-overlay').classList.remove('open');
+      document.body.style.overflow = '';
+  }
 </script>  
 </body>
 </html>
