@@ -784,14 +784,18 @@ sideCats.forEach(b => b.addEventListener('click', () => setFilter(b.dataset.filt
 document.addEventListener('keydown', e => { if (e.key === 'Escape') { document.getElementById('modal-overlay').classList.remove('open'); document.body.style.overflow=''; }});
 
 <script>
-  // Теперь это внутри скрипта и не будет отображаться как текст
+  // Закрытие по кнопке Escape
   document.addEventListener('keydown', e => { 
     if (e.key === 'Escape') { 
-      document.getElementById('modal-overlay').classList.remove('open'); 
-      document.body.style.overflow = ''; 
+      const overlay = document.getElementById('modal-overlay');
+      if (overlay) {
+          overlay.classList.remove('open'); 
+          document.body.style.overflow = ''; 
+      }
     }
   });
 
+  // Функция открытия модального окна
   function showModal(id) {
     const p = data.find(item => item.id === id);
     
@@ -815,10 +819,11 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') { document.g
       }
   }
 
+  // Функция закрытия
   function closeModal() {
       document.getElementById('modal-overlay').classList.remove('open');
       document.body.style.overflow = '';
   }
-</script>  
+</script> 
 </body>
 </html>
