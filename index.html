@@ -774,7 +774,7 @@ function filterCards() {
 searchInput.addEventListener('input', filterCards);
 sideCats.forEach(b => b.addEventListener('click', () => setFilter(b.dataset.filter)));
 document.addEventListener('keydown', e => { if (e.key === 'Escape') { document.getElementById('modal-overlay').classList.remove('open'); document.body.style.overflow=''; }});
-</script>
+
   function showModal(id) {
         const p = data.find(item => item.id === id);
         if (p) {
