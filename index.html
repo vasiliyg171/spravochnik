@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Справочник специалистов — Арт Квартал</title>
+<link href="https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400&family=PT+Sans:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #1a1a1a;
+    --dark: #2c2c2c;
+    --mid: #555;
+    --muted: #888;
+    --light: #bbb;
+    --border: #e0e0e0;
+    --border-dark: #c8c8c8;
+    --bg: #ffffff;
+    --bg-off: #f8f7f5;
+    --bg-dark: #1e1e1e;
+    --accent: #c0392b;
+    --accent-dark: #922b21;
+    --accent-light: #fdf0ef;
+    --blue: #2471a3; --blue-light: #eaf3fb;
+    --teal: #1a7a6e; --teal-light: #e8f5f3;
+    --purple: #6c3483; --purple-light: #f4ecf7;
+    --amber: #b7770d; --amber-light: #fef9e7;
+    --green: #1e6b3a; --green-light: #eafaf1;
+    --rose: #943126; --rose-light: #fdedec;
+    --indigo: #1a3a7a; --indigo-light: #eaeffb;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'PT Sans', sans-serif; background: var(--bg); color: var(--black); font-size: 16px; line-height: 1.6; }
+
+  .topbar { background: var(--bg-dark); color: #aaa; font-size: 12px; padding: 6px 0; text-align: center; letter-spacing: 0.05em; }
+  .topbar span { color: #fff; font-weight: 700; }
+
+  header { border-bottom: 3px solid var(--black); position: sticky; top: 0; background: var(--bg); z-index: 50; }
+  .header-top { max-width: 1100px; margin: 0 auto; padding: 16px 2rem 12px; display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; flex-wrap: wrap; border-bottom: 1px solid var(--border); }
+  .masthead-label { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 2px; }
+  .masthead h1 { font-family: 'PT Serif', serif; font-size: 30px; font-weight: 700; color: var(--black); line-height: 1; letter-spacing: -0.5px; }
+  .masthead-sub { font-size: 13px; color: var(--muted); margin-top: 3px; }
+  .header-meta { text-align: right; font-size: 13px; color: var(--muted); line-height: 1.4; }
+  .header-meta strong { color: var(--black); font-size: 22px; font-family: 'PT Serif', serif; display: block; }
+
+  /* CATEGORY TILES */
+  .cat-section { background: var(--bg); border-bottom: 3px solid var(--black); }
+  .cat-section-inner { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+  .cat-section-title { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); padding: 12px 0 8px; }
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 3px;
+    padding-bottom: 3px;
+  }
+  .cat-tile {
+    position: relative;
+    height: 100px;
+    overflow: hidden;
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding: 0;
+    display: block;
+  }
+  .cat-tile-bg { position: absolute; inset: 0; transition: transform 0.3s ease; }
+  .cat-tile:hover .cat-tile-bg { transform: scale(1.04); }
+  .cat-tile-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.18); transition: background 0.2s; }
+  .cat-tile.active .cat-tile-overlay { background: rgba(0,0,0,0.35); }
+  .cat-tile-label {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    color: #fff;
+    font-family: 'PT Sans', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: center;
+    text-shadow: 0 1px 6px rgba(0,0,0,0.5);
+  }
+  .cat-tile-count {
+    display: block;
+    font-size: 13px;
+    font-weight: 400;
+    opacity: 0.9;
+    margin-top: 4px;
+  }
+  .cat-tile-all .cat-tile-bg { background: #1e1e1e; }
+
+  /* HERO */
+  .hero { background: var(--bg-off); border-bottom: 1px solid var(--border); padding: 1.5rem 2rem; }
+  .hero-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; }
+  .hero-text { flex: 1; min-width: 180px; font-family: 'PT Serif', serif; font-size: 17px; font-style: italic; color: var(--mid); }
+  .search-wrap { flex: 1; min-width: 240px; max-width: 420px; position: relative; }
+  .search-wrap input { width: 100%; padding: 12px 18px 12px 44px; border: 2px solid var(--border-dark); background: var(--bg); font-family: 'PT Sans', sans-serif; font-size: 15px; color: var(--black); outline: none; transition: border-color 0.15s; }
+  .search-wrap input:focus { border-color: var(--black); }
+  .search-wrap input::placeholder { color: var(--light); }
+  .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 16px; pointer-events: none; }
+  #search-count { font-size: 13px; color: var(--muted); margin-top: 5px; min-height: 16px; font-style: italic; }
+
+  /* LAYOUT */
+  .layout { max-width: 1100px; margin: 0 auto; padding: 0 2rem; display: grid; grid-template-columns: 1fr 260px; gap: 0; }
+  .content { border-right: 1px solid var(--border); padding: 2rem 2rem 4rem 0; }
+
+  /* SECTION */
+  .section { margin-bottom: 2.5rem; }
+  .section-header { display: flex; align-items: baseline; gap: 10px; margin-bottom: 1rem; padding-bottom: 8px; border-bottom: 2px solid var(--black); }
+  .section-icon { font-size: 18px; }
+  .section-title { font-family: 'PT Serif', serif; font-size: 21px; font-weight: 700; color: var(--black); }
+  .section-count { font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-left: auto; }
+
+  /* CARDS — clickable */
+  .cards { display: flex; flex-direction: column; }
+  .card {
+    display: flex; gap: 14px; align-items: flex-start;
+    padding: 13px 10px; border-bottom: 1px solid var(--border);
+    cursor: pointer; transition: background 0.12s;
+    border-radius: 4px;
+  }
+  .card:last-child { border-bottom: none; }
+  .card:hover { background: var(--bg-off); }
+  .card-click-hint { font-size: 11px; color: var(--light); margin-left: auto; align-self: center; font-style: italic; }
+  .avatar { width: 42px; height: 42px; border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+  .card-body { flex: 1; min-width: 0; }
+  .card-top { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; margin-bottom: 3px; }
+  .badge { font-size: 20px; font-weight: 700; padding: 4px 12px; border-radius: 3px; flex-shrink: 0; }
+  .card-name { font-family: 'PT Serif', serif; font-size: 17px; font-weight: 700; color: var(--black); line-height: 1.2; }
+  .card-contacts { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; margin-top: 4px; }
+  .card-phone { font-size: 15px; font-weight: 700; color: var(--accent); text-decoration: none; }
+  .card-phone:hover { text-decoration: underline; }
+  .card-link { font-size: 13px; color: var(--blue); text-decoration: none; font-style: italic; }
+  .card-link:hover { text-decoration: underline; }
+  .card-note { font-size: 12px; color: var(--muted); font-style: italic; }
+  .card-address { font-size: 13px; color: var(--mid); }
+  .card-hours { font-size: 12px; color: var(--muted); font-style: italic; }
+
+  /* colour */
+  .av-blue{background:var(--blue-light);color:var(--blue)} .av-teal{background:var(--teal-light);color:var(--teal)} .av-purple{background:var(--purple-light);color:var(--purple)} .av-amber{background:var(--amber-light);color:var(--amber)} .av-rose{background:var(--rose-light);color:var(--rose)} .av-green{background:var(--green-light);color:var(--green)} .av-indigo{background:var(--indigo-light);color:var(--indigo)} .av-accent{background:#fdedec;color:var(--accent)}
+  .bg-blue{background:var(--blue-light);color:var(--blue)} .bg-teal{background:var(--teal-light);color:var(--teal)} .bg-purple{background:var(--purple-light);color:var(--purple)} .bg-amber{background:var(--amber-light);color:var(--amber)} .bg-rose{background:var(--rose-light);color:var(--rose)} .bg-green{background:var(--green-light);color:var(--green)} .bg-indigo{background:var(--indigo-light);color:var(--indigo)} .bg-accent{background:#fdedec;color:var(--accent)}
+
+  /* SIDEBAR */
+  .sidebar { padding: 2rem 0 4rem 2rem; }
+  .sidebar-block { margin-bottom: 2rem; }
+  .sidebar-title { font-family: 'PT Serif', serif; font-size: 16px; font-weight: 700; color: var(--black); border-bottom: 2px solid var(--black); padding-bottom: 8px; margin-bottom: 12px; }
+  .sidebar-stat { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+  .sidebar-stat-label { color: var(--mid); }
+  .sidebar-stat-val { font-weight: 700; color: var(--black); font-family: 'PT Serif', serif; font-size: 16px; }
+  .sidebar-note { font-size: 13px; color: var(--muted); font-style: italic; line-height: 1.5; padding: 12px; border-left: 3px solid var(--accent); background: var(--accent-light); }
+  .sidebar-cats { display: flex; flex-direction: column; gap: 2px; }
+  .sidebar-cat { display: flex; justify-content: space-between; padding: 7px 8px; font-size: 14px; cursor: pointer; border-radius: 2px; transition: background 0.12s; border: none; background: none; width: 100%; text-align: left; font-family: 'PT Sans', sans-serif; color: var(--dark); }
+  .sidebar-cat:hover { background: var(--bg-off); }
+  .sidebar-cat.active { background: var(--black); color: #fff; font-weight: 700; }
+  .sidebar-cat-num { font-size: 12px; color: var(--muted); }
+  .sidebar-cat.active .sidebar-cat-num { color: #aaa; }
+
+  .no-results { padding: 3rem 0; text-align: center; color: var(--muted); font-style: italic; font-size: 16px; display: none; }
+  .card.hidden { display: none; }
+  .section.hidden { display: none; }
+
+  /* ===== MODAL ===== */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: 200;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 40px 1rem;
+    overflow-y: auto;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--bg);
+    width: 100%; max-width: 600px;
+    border-top: 4px solid var(--accent);
+    border-radius: 0 0 4px 4px;
+    position: relative;
+    animation: slideIn 0.2s ease;
+  }
+  @keyframes slideIn { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .modal-close { position: absolute; top: 14px; right: 16px; background: none; border: none; font-size: 22px; cursor: pointer; color: var(--muted); line-height: 1; padding: 4px 8px; }
+  .modal-close:hover { color: var(--black); }
+
+  .modal-head { padding: 24px 24px 16px; border-bottom: 1px solid var(--border); display: flex; gap: 16px; align-items: flex-start; }
+  .modal-avatar { width: 60px; height: 60px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; flex-shrink: 0; }
+  .modal-badge { display: inline-block; font-size: 14px; font-weight: 700; padding: 3px 10px; border-radius: 3px; margin-bottom: 6px; }
+  .modal-name { font-family: 'PT Serif', serif; font-size: 22px; font-weight: 700; color: var(--black); line-height: 1.2; margin-bottom: 10px; }
+  .modal-contacts { display: flex; flex-direction: column; gap: 6px; }
+  .modal-phone { font-size: 18px; font-weight: 700; color: var(--accent); text-decoration: none; }
+  .modal-phone:hover { text-decoration: underline; }
+  .modal-tg { font-size: 15px; color: var(--blue); text-decoration: none; }
+  .modal-tg:hover { text-decoration: underline; }
+  .modal-note { font-size: 13px; color: var(--muted); font-style: italic; }
+  .modal-address { font-size: 14px; color: var(--mid); }
+  .modal-hours { font-size: 13px; color: var(--muted); font-style: italic; }
+
+  /* COMMENTS */
+  .modal-comments { padding: 20px 24px 24px; }
+  .comments-title { font-family: 'PT Serif', serif; font-size: 17px; font-weight: 700; color: var(--black); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .comment-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px; }
+  .comment-item { background: var(--bg-off); border-left: 3px solid var(--border-dark); padding: 10px 14px; border-radius: 0 4px 4px 0; }
+  .comment-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+  .comment-meta { font-size: 12px; color: var(--muted); }
+  .comment-meta strong { color: var(--dark); font-size: 13px; }
+  .comment-actions { display: flex; gap: 6px; flex-shrink: 0; }
+  .comment-btn { background: none; border: none; cursor: pointer; font-size: 12px; font-family: 'PT Sans', sans-serif; padding: 2px 8px; border-radius: 3px; transition: background 0.12s; }
+  .comment-btn-edit { color: var(--blue); }
+  .comment-btn-edit:hover { background: var(--blue-light); }
+  .comment-btn-delete { color: var(--accent); }
+  .comment-btn-delete:hover { background: var(--accent-light); }
+  .comment-text { font-size: 14px; color: var(--dark); line-height: 1.5; }
+  .comment-edit-area { display: none; margin-top: 8px; }
+  .comment-edit-area textarea { width: 100%; border: 1.5px solid var(--border-dark); padding: 8px 12px; font-family: 'PT Sans', sans-serif; font-size: 14px; color: var(--black); background: var(--bg); outline: none; resize: vertical; min-height: 60px; transition: border-color 0.15s; }
+  .comment-edit-area textarea:focus { border-color: var(--black); }
+  .comment-edit-btns { display: flex; gap: 8px; margin-top: 6px; }
+  .comment-save { background: var(--black); color: #fff; border: none; padding: 6px 16px; font-family: 'PT Sans', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; border-radius: 3px; }
+  .comment-save:hover { background: var(--accent); }
+  .comment-cancel { background: none; border: 1.5px solid var(--border-dark); color: var(--mid); padding: 6px 14px; font-family: 'PT Sans', sans-serif; font-size: 13px; cursor: pointer; border-radius: 3px; }
+  .comment-cancel:hover { border-color: var(--black); color: var(--black); }
+  .no-comments { font-size: 14px; color: var(--muted); font-style: italic; margin-bottom: 16px; }
+
+  .comment-form { border-top: 1px solid var(--border); padding-top: 16px; }
+  .comment-form-title { font-size: 14px; font-weight: 700; color: var(--black); margin-bottom: 10px; }
+  .comment-form input, .comment-form textarea {
+    width: 100%; border: 1.5px solid var(--border-dark); padding: 10px 14px;
+    font-family: 'PT Sans', sans-serif; font-size: 14px; color: var(--black);
+    background: var(--bg); outline: none; margin-bottom: 8px; resize: vertical;
+    transition: border-color 0.15s;
+  }
+  .comment-form input:focus, .comment-form textarea:focus { border-color: var(--black); }
+  .comment-form input::placeholder, .comment-form textarea::placeholder { color: var(--light); }
+  .comment-form textarea { min-height: 80px; }
+  .comment-submit {
+    background: var(--black); color: #fff; border: none;
+    padding: 11px 24px; font-family: 'PT Sans', sans-serif;
+    font-size: 14px; font-weight: 700; cursor: pointer;
+    border-radius: 3px; transition: background 0.15s;
+  }
+  .comment-submit:hover { background: var(--accent); }
+  .comment-success { display: none; font-size: 14px; color: var(--green); font-weight: 700; margin-top: 8px; }
+
+  footer { background: var(--bg-dark); color: #888; text-align: center; padding: 1.5rem; font-size: 13px; border-top: 3px solid var(--accent); }
+  footer strong { color: #fff; }
+
+  @media (max-width: 760px) {
+    /* topbar */
+    .topbar { font-size: 11px; padding: 5px 1rem; }
+
+    /* header */
+    .header-top { padding: 10px 1rem 8px; }
+    .masthead h1 { font-size: 20px; }
+    .masthead-sub { font-size: 12px; }
+    .masthead-label { font-size: 10px; }
+
+    /* category tiles — 3 columns on mobile, smaller height */
+    .cat-section-inner { padding: 0 0.5rem; }
+    .cat-section-title { padding: 8px 0.5rem 6px; }
+    .cat-grid { grid-template-columns: repeat(3, 1fr); gap: 3px; }
+    .cat-tile { height: 70px; }
+    .cat-tile-label { font-size: 12px; padding: 6px; }
+    .cat-tile-count { font-size: 10px; margin-top: 2px; }
+
+    /* hero / search */
+    .hero { padding: 1rem; }
+    .hero-inner { gap: 0.75rem; }
+    .hero-text { display: none; }
+    .search-wrap { max-width: 100%; min-width: 0; width: 100%; }
+    .search-wrap input { font-size: 16px; padding: 13px 16px 13px 42px; }
+
+    /* layout — single column, sidebar hidden */
+    .layout { grid-template-columns: 1fr; padding: 0 1rem; }
+    .content { border-right: none; padding: 1.5rem 0 3rem; }
+    .sidebar { display: none; }
+
+    /* sections */
+    .section-title { font-size: 18px; }
+    .section { margin-bottom: 2rem; }
+
+    /* cards */
+    .card { padding: 12px 6px; gap: 10px; }
+    .avatar { width: 38px; height: 38px; font-size: 12px; }
+    .badge { font-size: 16px; padding: 3px 10px; }
+    .card-name { font-size: 16px; }
+    .card-phone { font-size: 16px; }
+    .card-click-hint { display: none; }
+
+    /* modal — slides up from bottom */
+    .modal-overlay { padding: 0; align-items: flex-end; }
+    .modal { border-radius: 16px 16px 0 0; border-top-width: 3px; max-height: 90vh; overflow-y: auto; }
+    .modal-head { padding: 20px 18px 14px; }
+    .modal-name { font-size: 18px; }
+    .modal-phone { font-size: 16px; }
+    .modal-comments { padding: 16px 18px 20px; }
+    .comment-form input, .comment-form textarea { font-size: 16px; }
+  }
+
+  @media (max-width: 380px) {
+    .cat-grid { grid-template-columns: repeat(2, 1fr); }
+    .cat-tile { height: 75px; }
+    .cat-tile-label { font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+
+
+
+<header>
+  <div class="header-top">
+    <div class="masthead">
+      <div class="masthead-label">Арт Квартал · Калининград</div>
+      <h1>Справочник специалистов</h1>
+      <div class="masthead-sub">Проверенные мастера и врачи, рекомендованные жильцами</div>
+    </div>
+  </div>
+</header>
+
+<div class="cat-section">
+    <div class="cat-section-inner">
+      <div class="cat-section-title">Выберите категорию</div>
+      <div class="cat-grid">
+
+        <button class="cat-tile cat-tile-all active" data-filter="all" onclick="setFilter('all')">
+          <div class="cat-tile-bg" style="background:#2c2c2c;"></div>
+          <div class="cat-tile-overlay"></div>
+          <div class="cat-tile-label">Все категории<span class="cat-tile-count">24 специалиста</span></div>
+        </button>
+
+        <button class="cat-tile" data-filter="детские врачи" onclick="setFilter('детские врачи')">
+          <div class="cat-tile-bg" style="background:#1a6b9a;"></div>
+          <div class="cat-tile-overlay"></div>
+          <div class="cat-tile-label">👶 Детские врачи<span class="cat-tile-count">8 специалистов</span></div>
+        </button>
+
+        <button class="cat-tile" data-filter="взрослые врачи" onclick="setFilter('взрослые врачи')">
+          <div class="cat-tile-bg" style="background:#2471a3;"></div>
+          <div class="cat-tile-overlay"></div>
+          <div class="cat-tile-label">🩺 Врачи для взрослых<span class="cat-tile-count">1 специалист</span></div>
+        </button>
+
+        <button class="cat-tile" data-filter="мебельщики" onclick="setFilter('мебельщики')">
+          <div class="cat-tile-bg" style="background:#7d5a2f;"></div>
+          <div class="cat-tile-overlay"></div>
+          <div class="cat-tile-label">🪑 Мебель<span class="cat-tile-count">2 специалиста</span></div>
+        </button>
+
+        <button class="cat-tile" data-filter="швейные мастера" onclick="setFilter('швейные мастера')">
+          <div class="cat-tile-bg" style="background:#6c3483;"></div>
+          <div class="cat-tile-overlay"></div>
+          <div class="cat-tile-label">🧵 Швейные мастера<span class="cat-tile-count">1 специалист</span></div>
+        </button>
+
+        <button class="cat-tile" data-filter="ремонт обуви" onclick="setFilter('ремонт обуви')">
+          <div class="cat-tile-bg" style="background:#5d4037;"></div>
+          <div class="cat-tile-overlay"></div>
+          <div class="cat-tile-label">👟 Ремонт обуви<span class="cat-tile-count">1 мастерская</span></div>
+        </button>
+
+        <button class="cat-tile" data-filter="фотографы" onclick="setFilter('фотографы')">
+          <div class="cat-tile-bg" style="background:#1a5276;"></div>
+          <div class="cat-tile-overlay"></div>
+          <div class="cat-tile-label">📷 Фотографы<span class="cat-tile-count">1 специалист</span></div>
+        </button>
+
+        <button class="cat-tile" data-filter="отделка и ремонт" onclick="setFilter('отделка и ремонт')">
+          <div class="cat-tile-bg" style="background:#1e6b3a;"></div>
+          <div class="cat-tile-overlay"></div>
+          <div class="cat-tile-label">🔧 Отделка и ремонт<span class="cat-tile-count">4 специалиста</span></div>
+        </button>
+
+        <button class="cat-tile" data-filter="подарки" onclick="setFilter('подарки')">
+          <div class="cat-tile-bg" style="background:#c0392b;"></div>
+          <div class="cat-tile-overlay"></div>
+          <div class="cat-tile-label">🎁 Подарки<span class="cat-tile-count">1 специалист</span></div>
+        </button>
+
+        <button class="cat-tile" data-filter="компьютеры" onclick="setFilter('компьютеры')">
+          <div class="cat-tile-bg" style="background:#1a3a7a;"></div>
+          <div class="cat-tile-overlay"></div>
+          <div class="cat-tile-label">💻 Компьютеры<span class="cat-tile-count">1 специалист</span></div>
+        </button>
+
+        <button class="cat-tile" data-filter="красота" onclick="setFilter('красота')">
+          <div class="cat-tile-bg" style="background:#943126;"></div>
+          <div class="cat-tile-overlay"></div>
+          <div class="cat-tile-label">💅 Красота<span class="cat-tile-count">1 специалист</span></div>
+        </button>
+
+        <button class="cat-tile" data-filter="обучение" onclick="setFilter('обучение')">
+          <div class="cat-tile-bg" style="background:#b7770d;"></div>
+          <div class="cat-tile-overlay"></div>
+          <div class="cat-tile-label">📚 Обучение<span class="cat-tile-count">3 специалиста</span></div>
+        </button>
+
+      </div>
+    </div>
+  </div>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-text">Найдите нужного специалиста — нажмите на карточку чтобы увидеть подробности и оставить отзыв</div>
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search" placeholder="Поиск по имени или специальности…">
+      <div id="search-count"></div>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+<div class="content" id="main">
+
+<!-- ДЕТСКИЕ ВРАЧИ -->
+<div class="section" data-section="детские врачи">
+  <div class="section-header"><span class="section-icon">👶</span><span class="section-title">Детские врачи</span><span class="section-count">8 специалистов</span></div>
+  <div class="cards">
+    <div class="card" onclick="openModal('ta')" data-name="торяник анна константиновна" data-spec="пульманолог"><div class="avatar av-blue">ТА</div><div class="card-body"><div class="card-top"><span class="badge bg-blue">Пульманолог</span></div><div class="card-name">Торяник Анна Константиновна</div><div class="card-contacts"><a class="card-phone" href="tel:+79622541225" onclick="event.stopPropagation()">+7 962 254 12 25</a><span class="card-note">запись на приём</span></div></div><span class="card-click-hint">подробнее →</span></div>
+    <div class="card" onclick="openModal('ls')" data-name="литвиненко сергей николаевич" data-spec="пульманолог"><div class="avatar av-blue">ЛС</div><div class="card-body"><div class="card-top"><span class="badge bg-blue">Пульманолог</span></div><div class="card-name">Литвиненко Сергей Николаевич</div><div class="card-contacts"><a class="card-phone" href="tel:+74012201359" onclick="event.stopPropagation()">+7 4012 20-13-59</a><span class="card-note">запись на приём</span></div></div><span class="card-click-hint">подробнее →</span></div>
+    <div class="card" onclick="openModal('na')" data-name="невструев андрей александрович" data-spec="пульманолог рентгенолог"><div class="avatar av-teal">НА</div><div class="card-body"><div class="card-top"><span class="badge bg-teal">Пульманолог, рентгенолог</span></div><div class="card-name">Невструев Андрей Александрович</div><div class="card-contacts"><a class="card-phone" href="tel:+74012799062" onclick="event.stopPropagation()">+7 4012 79-90-62</a><span class="card-note">запись на приём</span></div></div><span class="card-click-hint">подробнее →</span></div>
+    <div class="card" onclick="openModal('vr')" data-name="валеева рената ринатовна" data-spec="ортодонт"><div class="avatar av-purple">ВР</div><div class="card-body"><div class="card-top"><span class="badge bg-purple">Ортодонт</span></div><div class="card-name">Валеева Рената Ринатовна</div><div class="card-contacts"><a class="card-phone" href="tel:+74012799031" onclick="event.stopPropagation()">+7 4012 79-90-31</a><span class="card-note">запись на приём</span></div></div><span class="card-click-hint">подробнее →</span></div>
+    <div class="card" onclick="openModal('nm')" data-name="нунушян мгер маратович" data-spec="ортодонт"><div class="avatar av-purple">НМ</div><div class="card-body"><div class="card-top"><span class="badge bg-purple">Ортодонт</span></div><div class="card-name">Нунушян Мгер Маратович</div><div class="card-contacts"><a class="card-phone" href="tel:+74012799405" onclick="event.stopPropagation()">+7 4012 79-94-05</a><span class="card-note">запись на приём</span></div></div><span class="card-click-hint">подробнее →</span></div>
+    <div class="card" onclick="openModal('ko')" data-name="каменева ольга павловна" data-spec="гастроэнтеролог"><div class="avatar av-rose">КО</div><div class="card-body"><div class="card-top"><span class="badge bg-rose">Гастроэнтеролог</span></div><div class="card-name">Каменева Ольга Павловна</div><div class="card-contacts"><a class="card-phone" href="tel:+74012615739" onclick="event.stopPropagation()">+7 4012 61-57-39</a><span class="card-note">запись на приём</span></div></div><span class="card-click-hint">подробнее →</span></div>
+    <div class="card" onclick="openModal('ea')" data-name="елена александровна медсестра" data-spec="медсестра на дом"><div class="avatar av-amber">ЕА</div><div class="card-body"><div class="card-top"><span class="badge bg-amber">Медсестра на дом</span></div><div class="card-name">Елена Александровна</div><div class="card-contacts"><a class="card-phone" href="tel:+79118662035" onclick="event.stopPropagation()">+7 911 866 20 35</a></div></div><span class="card-click-hint">подробнее →</span></div>
+    <div class="card" onclick="openModal('dp')" data-name="поликлиника дпо №4" data-spec="детский врач на дом"><div class="avatar av-accent">ДП</div><div class="card-body"><div class="card-top"><span class="badge bg-accent">Детский врач на дом</span></div><div class="card-name">Поликлиника ДПО №4</div><div class="card-contacts"><a class="card-phone" href="tel:+74012640890" onclick="event.stopPropagation()">+7 4012 640890</a></div></div><span class="card-click-hint">подробнее →</span></div>
+  </div>
+</div>
+
+<!-- ВЗРОСЛЫЕ ВРАЧИ -->
+<div class="section" data-section="взрослые врачи">
+  <div class="section-header"><span class="section-icon">🩺</span><span class="section-title">Врачи для взрослых</span><span class="section-count">1 специалист</span></div>
+  <div class="cards">
+    <div class="card" onclick="openModal('ai')" data-name="антипина ирина николаевна" data-spec="нефролог"><div class="avatar av-blue">АИ</div><div class="card-body"><div class="card-top"><span class="badge bg-blue">Нефролог</span></div><div class="card-name">Антипина Ирина Николаевна</div><div class="card-contacts"><a class="card-phone" href="tel:+79622541225" onclick="event.stopPropagation()">+7 962 254 12 25</a><span class="card-note">запись на приём</span></div></div><span class="card-click-hint">подробнее →</span></div>
+  </div>
+</div>
+
+<!-- МЕБЕЛЬЩИКИ -->
+<div class="section" data-section="мебельщики">
+  <div class="section-header"><span class="section-icon">🪑</span><span class="section-title">Мебельщики</span><span class="section-count">2 специалиста</span></div>
+  <div class="cards">
+    <div class="card" onclick="openModal('ev')" data-name="евгений мебель" data-spec="мастер по мебели"><div class="avatar av-amber">ЕВ</div><div class="card-body"><div class="card-top"><span class="badge bg-amber">Мастер по мебели</span></div><div class="card-name">Евгений</div><div class="card-contacts"><a class="card-phone" href="tel:+79814636719" onclick="event.stopPropagation()">+7 981 463 67 19</a></div></div><span class="card-click-hint">подробнее →</span></div>
+    <div class="card" onclick="openModal('va')" data-name="василий мебель заказ" data-spec="мебель на заказ"><div class="avatar av-amber">ВА</div><div class="card-body"><div class="card-top"><span class="badge bg-amber">Мебель на заказ</span></div><div class="card-name">Василий</div><div class="card-contacts"><a class="card-phone" href="tel:+79114907491" onclick="event.stopPropagation()">+7 911 490-74-91</a></div></div><span class="card-click-hint">подробнее →</span></div>
+  </div>
+</div>
+
+<!-- ШВЕЙНЫЕ -->
+<div class="section" data-section="швейные мастера">
+  <div class="section-header"><span class="section-icon">🧵</span><span class="section-title">Швейные мастера</span><span class="section-count">1 специалист</span></div>
+  <div class="cards">
+    <div class="card" onclick="openModal('vi')" data-name="виктория ремонт одежды" data-spec="ремонт одежды"><div class="avatar av-purple">ВИ</div><div class="card-body"><div class="card-top"><span class="badge bg-purple">Ремонт одежды</span></div><div class="card-name">Виктория</div><div class="card-contacts"><a class="card-phone" href="tel:+79644715542" onclick="event.stopPropagation()">+7 964 471 55 42</a></div></div><span class="card-click-hint">подробнее →</span></div>
+  </div>
+</div>
+
+<!-- РЕМОНТ ОБУВИ -->
+<div class="section" data-section="ремонт обуви">
+  <div class="section-header"><span class="section-icon">👟</span><span class="section-title">Ремонт обуви</span><span class="section-count">1 мастерская</span></div>
+  <div class="cards">
+    <div class="card" onclick="openModal('shoe')" data-name="мастерская обувь челнакова" data-spec="ремонт обуви"><div class="avatar av-accent">МА</div><div class="card-body"><div class="card-top"><span class="badge bg-accent">Мастерская</span></div><div class="card-name">Мастерская по ремонту обуви</div><div class="card-contacts"><a class="card-phone" href="tel:+79097755575" onclick="event.stopPropagation()">+7 (909) 775-55-75</a></div><div class="card-address">ул. Генерала Челнакова, 44</div></div><span class="card-click-hint">подробнее →</span></div>
+  </div>
+</div>
+
+<!-- ФОТОГРАФЫ -->
+<div class="section" data-section="фотографы">
+  <div class="section-header"><span class="section-icon">📷</span><span class="section-title">Фотографы</span><span class="section-count">1 специалист</span></div>
+  <div class="cards">
+    <div class="card" onclick="openModal('kr')" data-name="кристина фотограф малыши" data-spec="фотограф дети"><div class="avatar av-teal">КР</div><div class="card-body"><div class="card-top"><span class="badge bg-teal">Спец. по малышам</span></div><div class="card-name">Кристина</div><div class="card-contacts"><a class="card-phone" href="tel:+79114899207" onclick="event.stopPropagation()">+7 911 489 92 07</a><a class="card-link" href="https://t.me/kristina_ber" target="_blank" onclick="event.stopPropagation()">@kristina_ber</a></div></div><span class="card-click-hint">подробнее →</span></div>
+  </div>
+</div>
+
+<!-- РЕМОНТ -->
+<div class="section" data-section="отделка и ремонт">
+  <div class="section-header"><span class="section-icon">🔧</span><span class="section-title">Отделка и ремонт</span><span class="section-count">4 специалиста</span></div>
+  <div class="cards">
+    <div class="card" onclick="openModal('al')" data-name="алексей плиточник" data-spec="плитка плиточник"><div class="avatar av-green">АЛ</div><div class="card-body"><div class="card-top"><span class="badge bg-green">Плиточник</span></div><div class="card-name">Алексей</div><div class="card-contacts"><a class="card-phone" href="tel:+79114762187" onclick="event.stopPropagation()">+7 911 476 21 87</a></div></div><span class="card-click-hint">подробнее →</span></div>
+    <div class="card" onclick="openModal('vd')" data-name="вадим плиточник" data-spec="плитка плиточник"><div class="avatar av-green">ВА</div><div class="card-body"><div class="card-top"><span class="badge bg-green">Плиточник</span></div><div class="card-name">Вадим</div><div class="card-contacts"><a class="card-phone" href="tel:+79114512024" onclick="event.stopPropagation()">+7 911 451 20 24</a></div></div><span class="card-click-hint">подробнее →</span></div>
+    <div class="card" onclick="openModal('se')" data-name="сергей электрик монтаж" data-spec="электрик монтаж"><div class="avatar av-green">СЕ</div><div class="card-body"><div class="card-top"><span class="badge bg-green">Электрик, монтаж</span></div><div class="card-name">Сергей</div><div class="card-contacts"><a class="card-phone" href="tel:+89052421919" onclick="event.stopPropagation()">8 905 242 19 19</a></div></div><span class="card-click-hint">подробнее →</span></div>
+    <div class="card" onclick="openModal('kotl')" data-name="вадим котлы ремонт" data-spec="ремонт котлов"><div class="avatar av-green">ВД</div><div class="card-body"><div class="card-top"><span class="badge bg-green">Ремонт котлов</span></div><div class="card-name">Вадим</div><div class="card-contacts"><a class="card-phone" href="tel:+79527944774" onclick="event.stopPropagation()">+7 952 794 47 74</a></div></div><span class="card-click-hint">подробнее →</span></div>
+  </div>
+</div>
+
+<!-- ПОДАРКИ -->
+<div class="section" data-section="подарки">
+  <div class="section-header"><span class="section-icon">🎁</span><span class="section-title">Оформление подарков</span><span class="section-count">1 специалист</span></div>
+  <div class="cards">
+    <div class="card" onclick="openModal('alex')" data-name="александра подарки зефир" data-spec="подарки зефир"><div class="avatar av-rose">АЛ</div><div class="card-body"><div class="card-top"><span class="badge bg-rose">Подарки из зефира</span></div><div class="card-name">Александра</div><div class="card-contacts"><a class="card-phone" href="tel:+79114892496" onclick="event.stopPropagation()">+7 911 489 24 96</a></div></div><span class="card-click-hint">подробнее →</span></div>
+  </div>
+</div>
+
+<!-- КОМПЬЮТЕРЫ -->
+<div class="section" data-section="компьютеры">
+  <div class="section-header"><span class="section-icon">💻</span><span class="section-title">Ремонт компьютеров</span><span class="section-count">1 специалист</span></div>
+  <div class="cards">
+    <div class="card" onclick="openModal('pc')" data-name="мастер компьютер pchelper" data-spec="ремонт компьютер"><div class="avatar av-indigo">ПК</div><div class="card-body"><div class="card-top"><span class="badge bg-indigo">Ремонт ПК</span></div><div class="card-name">Мастер</div><div class="card-contacts"><a class="card-phone" href="tel:+79992554542" onclick="event.stopPropagation()">+7 999 255 45 42</a><a class="card-link" href="https://t.me/PChelper39" target="_blank" onclick="event.stopPropagation()">@PChelper39</a></div></div><span class="card-click-hint">подробнее →</span></div>
+  </div>
+</div>
+
+<!-- КРАСОТА -->
+<div class="section" data-section="красота">
+  <div class="section-header"><span class="section-icon">💅</span><span class="section-title">Здоровье и красота</span><span class="section-count">1 специалист</span></div>
+  <div class="cards">
+    <div class="card" onclick="openModal('an')" data-name="анна маникюр педикюр" data-spec="маникюр педикюр"><div class="avatar av-purple">АН</div><div class="card-body"><div class="card-top"><span class="badge bg-purple">Маникюр и педикюр</span></div><div class="card-name">Анна</div><div class="card-contacts"><a class="card-phone" href="tel:+79114728327" onclick="event.stopPropagation()">+7 911 472 83 27</a><span class="card-note">можно в Telegram</span></div></div><span class="card-click-hint">подробнее →</span></div>
+  </div>
+</div>
+
+<!-- ОБУЧЕНИЕ -->
+<div class="section" data-section="обучение">
+  <div class="section-header"><span class="section-icon">📚</span><span class="section-title">Курсы и обучение</span><span class="section-count">3 специалиста</span></div>
+  <div class="cards">
+    <div class="card" onclick="openModal('ek')" data-name="екатерина репетитор английский" data-spec="английский репетитор"><div class="avatar av-blue">ЕК</div><div class="card-body"><div class="card-top"><span class="badge bg-blue">Репетитор, английский</span></div><div class="card-name">Екатерина</div><div class="card-contacts"><a class="card-phone" href="tel:+79823057681" onclick="event.stopPropagation()">+7 982 305 76 81</a><a class="card-link" href="https://t.me/Ekaterina_G0203" target="_blank" onclick="event.stopPropagation()">@Ekaterina_G0203</a></div></div><span class="card-click-hint">подробнее →</span></div>
+    <div class="card" onclick="openModal('yu')" data-name="весёлкина юлия александровна учитель дефектолог" data-spec="учитель начальные классы дефектолог"><div class="avatar av-blue">ВЮ</div><div class="card-body"><div class="card-top"><span class="badge bg-blue">Учитель нач. классов, дефектолог</span></div><div class="card-name">Весёлкина Юлия Александровна</div><div class="card-contacts"><a class="card-phone" href="tel:+79216186348" onclick="event.stopPropagation()">+7 921 618 63 48</a><span class="card-note">Telegram, МАКС</span></div></div><span class="card-click-hint">подробнее →</span></div>
+    <div class="card" onclick="openModal('ss')" data-name="своя среда детский центр" data-spec="детский центр развитие"><div class="avatar av-teal">СС</div><div class="card-body"><div class="card-top"><span class="badge bg-teal">Детский центр</span></div><div class="card-name">Своя Среда</div><div class="card-contacts"><a class="card-link" href="https://t.me/svoya_sreda39" target="_blank" onclick="event.stopPropagation()">@svoya_sreda39 в Telegram</a><span class="card-note">для записи — написать в TG</span></div></div><span class="card-click-hint">подробнее →</span></div>
+  </div>
+</div>
+
+<div class="no-results" id="no-results">Ничего не найдено. Попробуйте другой запрос.</div>
+</div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-block">
+    <div class="sidebar-title">Статистика</div>
+    <div class="sidebar-stat"><span class="sidebar-stat-label">Специалистов</span><span class="sidebar-stat-val">24</span></div>
+    <div class="sidebar-stat"><span class="sidebar-stat-label">Категорий</span><span class="sidebar-stat-val">12</span></div>
+  </div>
+  <div class="sidebar-block">
+    <div class="sidebar-title">Категории</div>
+    <div class="sidebar-cats">
+      <button class="sidebar-cat active" data-filter="all">Все категории<span class="sidebar-cat-num">24</span></button>
+      <button class="sidebar-cat" data-filter="детские врачи">👶 Детские врачи<span class="sidebar-cat-num">8</span></button>
+      <button class="sidebar-cat" data-filter="взрослые врачи">🩺 Взрослые врачи<span class="sidebar-cat-num">1</span></button>
+      <button class="sidebar-cat" data-filter="мебельщики">🪑 Мебельщики<span class="sidebar-cat-num">2</span></button>
+      <button class="sidebar-cat" data-filter="швейные мастера">🧵 Швейные мастера<span class="sidebar-cat-num">1</span></button>
+      <button class="sidebar-cat" data-filter="ремонт обуви">👟 Ремонт обуви<span class="sidebar-cat-num">1</span></button>
+      <button class="sidebar-cat" data-filter="фотографы">📷 Фотографы<span class="sidebar-cat-num">1</span></button>
+      <button class="sidebar-cat" data-filter="отделка и ремонт">🔧 Отделка и ремонт<span class="sidebar-cat-num">4</span></button>
+      <button class="sidebar-cat" data-filter="подарки">🎁 Подарки<span class="sidebar-cat-num">1</span></button>
+      <button class="sidebar-cat" data-filter="компьютеры">💻 Компьютеры<span class="sidebar-cat-num">1</span></button>
+      <button class="sidebar-cat" data-filter="красота">💅 Красота<span class="sidebar-cat-num">1</span></button>
+      <button class="sidebar-cat" data-filter="обучение">📚 Обучение<span class="sidebar-cat-num">3</span></button>
+    </div>
+  </div>
+  <div class="sidebar-block">
+    <div class="sidebar-note">Знаете хорошего специалиста? Напишите в группу ВКонтакте — добавим в справочник.</div>
+  </div>
+</aside>
+</div>
+
+<footer><strong>Арт Квартал</strong>, Калининград</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-head">
+      <div class="modal-avatar" id="m-avatar"></div>
+      <div style="flex:1;min-width:0;">
+        <div id="m-badge"></div>
+        <div class="modal-name" id="m-name"></div>
+        <div class="modal-contacts" id="m-contacts"></div>
+      </div>
+    </div>
+    <div class="modal-comments">
+      <div class="comments-title">Отзывы жильцов</div>
+      <div class="comment-list" id="comment-list"></div>
+      <div class="comment-form">
+        <div class="comment-form-title">Оставить отзыв</div>
+        <input type="text" id="comment-author" placeholder="Ваше имя (необязательно)">
+        <textarea id="comment-text" placeholder="Напишите ваш отзыв о специалисте…"></textarea>
+        <button class="comment-submit" onclick="submitComment()">Опубликовать отзыв</button>
+        <div class="comment-success" id="comment-success">✓ Отзыв опубликован!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const specialists = {
+  ta:   { avatar:'ТА', ac:'av-blue',   badge:'Пульманолог',              bc:'bg-blue',   name:'Торяник Анна Константиновна',     phone:'+7 962 254 12 25', tel:'tel:+79622541225', note:'запись на приём' },
+  ls:   { avatar:'ЛС', ac:'av-blue',   badge:'Пульманолог',              bc:'bg-blue',   name:'Литвиненко Сергей Николаевич',    phone:'+7 4012 20-13-59', tel:'tel:+74012201359', note:'запись на приём' },
+  na:   { avatar:'НА', ac:'av-teal',   badge:'Пульманолог, рентгенолог', bc:'bg-teal',   name:'Невструев Андрей Александрович',  phone:'+7 4012 79-90-62', tel:'tel:+74012799062', note:'запись на приём' },
+  vr:   { avatar:'ВР', ac:'av-purple', badge:'Ортодонт',                 bc:'bg-purple', name:'Валеева Рената Ринатовна',        phone:'+7 4012 79-90-31', tel:'tel:+74012799031', note:'запись на приём' },
+  nm:   { avatar:'НМ', ac:'av-purple', badge:'Ортодонт',                 bc:'bg-purple', name:'Нунушян Мгер Маратович',          phone:'+7 4012 79-94-05', tel:'tel:+74012799405', note:'запись на приём' },
+  ko:   { avatar:'КО', ac:'av-rose',   badge:'Гастроэнтеролог',          bc:'bg-rose',   name:'Каменева Ольга Павловна',         phone:'+7 4012 61-57-39', tel:'tel:+74012615739', note:'запись на приём' },
+  ea:   { avatar:'ЕА', ac:'av-amber',  badge:'Медсестра на дом',         bc:'bg-amber',  name:'Елена Александровна',             phone:'+7 911 866 20 35', tel:'tel:+79118662035' },
+  dp:   { avatar:'ДП', ac:'av-accent', badge:'Детский врач на дом',      bc:'bg-accent', name:'Поликлиника ДПО №4',              phone:'+7 4012 640890',   tel:'tel:+74012640890' },
+  ai:   { avatar:'АИ', ac:'av-blue',   badge:'Нефролог',                 bc:'bg-blue',   name:'Антипина Ирина Николаевна',       phone:'+7 962 254 12 25', tel:'tel:+79622541225', note:'запись на приём' },
+  ev:   { avatar:'ЕВ', ac:'av-amber',  badge:'Мастер по мебели',         bc:'bg-amber',  name:'Евгений',                         phone:'+7 981 463 67 19', tel:'tel:+79814636719' },
+  va:   { avatar:'ВА', ac:'av-amber',  badge:'Мебель на заказ',          bc:'bg-amber',  name:'Василий',                         phone:'+7 911 490-74-91', tel:'tel:+79114907491' },
+  vi:   { avatar:'ВИ', ac:'av-purple', badge:'Ремонт одежды',            bc:'bg-purple', name:'Виктория',                        phone:'+7 964 471 55 42', tel:'tel:+79644715542' },
+  shoe: { avatar:'МА', ac:'av-accent', badge:'Мастерская',               bc:'bg-accent', name:'Мастерская по ремонту обуви',     phone:'+7 (909) 775-55-75', tel:'tel:+79097755575', phone2:'+7 (963) 297-74-42', tel2:'tel:+79632977442', address:'ул. Генерала Челнакова, 44', hours:'пн–пт 9:00–19:00 · сб 9:00–17:00' },
+  kr:   { avatar:'КР', ac:'av-teal',   badge:'Спец. по малышам',         bc:'bg-teal',   name:'Кристина',                        phone:'+7 911 489 92 07', tel:'tel:+79114899207', tg:'https://t.me/kristina_ber', tgname:'@kristina_ber' },
+  al:   { avatar:'АЛ', ac:'av-green',  badge:'Плиточник',                bc:'bg-green',  name:'Алексей',                         phone:'+7 911 476 21 87', tel:'tel:+79114762187' },
+  vd:   { avatar:'ВА', ac:'av-green',  badge:'Плиточник',                bc:'bg-green',  name:'Вадим',                           phone:'+7 911 451 20 24', tel:'tel:+79114512024' },
+  se:   { avatar:'СЕ', ac:'av-green',  badge:'Электрик, монтаж',         bc:'bg-green',  name:'Сергей',                          phone:'8 905 242 19 19',  tel:'tel:+89052421919' },
+  kotl: { avatar:'ВД', ac:'av-green',  badge:'Ремонт котлов',            bc:'bg-green',  name:'Вадим',                           phone:'+7 952 794 47 74', tel:'tel:+79527944774' },
+  alex: { avatar:'АЛ', ac:'av-rose',   badge:'Подарки из зефира',        bc:'bg-rose',   name:'Александра',                      phone:'+7 911 489 24 96', tel:'tel:+79114892496' },
+  pc:   { avatar:'ПК', ac:'av-indigo', badge:'Ремонт ПК',                bc:'bg-indigo', name:'Мастер',                          phone:'+7 999 255 45 42', tel:'tel:+79992554542', tg:'https://t.me/PChelper39', tgname:'@PChelper39' },
+  an:   { avatar:'АН', ac:'av-purple', badge:'Маникюр и педикюр',        bc:'bg-purple', name:'Анна',                            phone:'+7 911 472 83 27', tel:'tel:+79114728327', note:'можно в Telegram' },
+  ek:   { avatar:'ЕК', ac:'av-blue',   badge:'Репетитор, английский',    bc:'bg-blue',   name:'Екатерина',                       phone:'+7 982 305 76 81', tel:'tel:+79823057681', tg:'https://t.me/Ekaterina_G0203', tgname:'@Ekaterina_G0203' },
+  yu:   { avatar:'ВЮ', ac:'av-blue',   badge:'Учитель нач. классов, дефектолог', bc:'bg-blue', name:'Весёлкина Юлия Александровна', phone:'+7 921 618 63 48', tel:'tel:+79216186348', note:'Telegram, МАКС' },
+  ss:   { avatar:'СС', ac:'av-teal',   badge:'Детский центр',            bc:'bg-teal',   name:'Своя Среда',                      tg:'https://t.me/svoya_sreda39', tgname:'@svoya_sreda39 в Telegram', note:'для записи — написать в TG' },
+};
+
+let currentId = null;
+const comments = {};
+
+function openModal(id) {
+  currentId = id;
+  const s = specialists[id];
+  document.getElementById('m-avatar').className = 'modal-avatar ' + s.ac;
+  document.getElementById('m-avatar').textContent = s.avatar;
+  document.getElementById('m-badge').innerHTML = `<span class="modal-badge ${s.bc}">${s.badge}</span>`;
+  document.getElementById('m-name').textContent = s.name;
+
+  let contacts = '';
+  if (s.phone)  contacts += `<a class="modal-phone" href="${s.tel}">${s.phone}</a>`;
+  if (s.phone2) contacts += `<a class="modal-phone" href="${s.tel2}">${s.phone2}</a>`;
+  if (s.tg)     contacts += `<a class="modal-tg" href="${s.tg}" target="_blank">${s.tgname}</a>`;
+  if (s.note)   contacts += `<span class="modal-note">${s.note}</span>`;
+  if (s.address)contacts += `<div class="modal-address">📍 ${s.address}</div>`;
+  if (s.hours)  contacts += `<div class="modal-hours">🕐 ${s.hours}</div>`;
+  document.getElementById('m-contacts').innerHTML = contacts;
+
+  renderComments(id);
+  document.getElementById('comment-author').value = '';
+  document.getElementById('comment-text').value = '';
+  document.getElementById('comment-success').style.display = 'none';
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function renderComments(id) {
+  const list = comments[id] || [];
+  const el = document.getElementById('comment-list');
+  if (list.length === 0) {
+    el.innerHTML = '<div class="no-comments">Отзывов пока нет — будьте первым!</div>';
+  } else {
+    el.innerHTML = list.map((c, i) => `
+      <div class="comment-item" id="comment-${id}-${i}">
+        <div class="comment-header">
+          <div class="comment-meta"><strong>${c.author}</strong> · ${c.date}</div>
+          <div class="comment-actions">
+            <button class="comment-btn comment-btn-edit" onclick="startEdit('${id}',${i})">✏️ Изменить</button>
+            <button class="comment-btn comment-btn-delete" onclick="deleteComment('${id}',${i})">🗑 Удалить</button>
+          </div>
+        </div>
+        <div class="comment-text" id="ctext-${id}-${i}">${c.text}</div>
+        <div class="comment-edit-area" id="cedit-${id}-${i}">
+          <textarea id="ctextarea-${id}-${i}">${c.text}</textarea>
+          <div class="comment-edit-btns">
+            <button class="comment-save" onclick="saveEdit('${id}',${i})">Сохранить</button>
+            <button class="comment-cancel" onclick="cancelEdit('${id}',${i})">Отмена</button>
+          </div>
+        </div>
+      </div>`).join('');
+  }
+}
+
+function startEdit(id, i) {
+  document.getElementById(`ctext-${id}-${i}`).style.display = 'none';
+  document.getElementById(`cedit-${id}-${i}`).style.display = 'block';
+  document.getElementById(`ctextarea-${id}-${i}`).focus();
+}
+
+function cancelEdit(id, i) {
+  document.getElementById(`ctext-${id}-${i}`).style.display = 'block';
+  document.getElementById(`cedit-${id}-${i}`).style.display = 'none';
+}
+
+function saveEdit(id, i) {
+  const newText = document.getElementById(`ctextarea-${id}-${i}`).value.trim();
+  if (!newText) return;
+  comments[id][i].text = newText;
+  comments[id][i].date += ' (изм.)';
+  renderComments(id);
+}
+
+function deleteComment(id, i) {
+  if (!confirm('Удалить этот отзыв?')) return;
+  comments[id].splice(i, 1);
+  renderComments(id);
+}
+
+function submitComment() {
+  const author = document.getElementById('comment-author').value.trim() || 'Жилец';
+  const text = document.getElementById('comment-text').value.trim();
+  if (!text) return;
+  if (!comments[currentId]) comments[currentId] = [];
+  const now = new Date();
+  comments[currentId].unshift({
+    author,
+    text,
+    date: now.toLocaleDateString('ru-RU', { day:'numeric', month:'long', year:'numeric' })
+  });
+  renderComments(currentId);
+  document.getElementById('comment-text').value = '';
+  document.getElementById('comment-author').value = '';
+  const ok = document.getElementById('comment-success');
+  ok.style.display = 'block';
+  setTimeout(() => ok.style.display = 'none', 3000);
+}
+
+function closeModal(e) {
+  if (e && e.target !== document.getElementById('modal-overlay')) return;
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// search + filter
+const searchInput = document.getElementById('search');
+const searchCount = document.getElementById('search-count');
+const noResults   = document.getElementById('no-results');
+const catTiles    = document.querySelectorAll('.cat-tile');
+const sideCats    = document.querySelectorAll('.sidebar-cat');
+let activeFilter  = 'all';
+
+function setFilter(f) {
+  activeFilter = f;
+  catTiles.forEach(b => b.classList.toggle('active', b.dataset.filter === f));
+  sideCats.forEach(b => b.classList.toggle('active', b.dataset.filter === f));
+  filterCards();
+  // scroll to top of content
+  const layout = document.querySelector('.layout');
+  const headerH = document.querySelector('header').offsetHeight;
+  const top = layout.getBoundingClientRect().top + window.scrollY - headerH - 8;
+  window.scrollTo({ top, behavior: 'smooth' });
+}
+
+function filterCards() {
+  const q = searchInput.value.toLowerCase().trim();
+  let total = 0;
+  document.querySelectorAll('.section').forEach(sec => {
+    const sn = sec.dataset.section;
+    if (activeFilter !== 'all' && activeFilter !== sn) { sec.classList.add('hidden'); return; }
+    sec.classList.remove('hidden');
+    let vis = 0;
+    sec.querySelectorAll('.card').forEach(card => {
+      const match = !q || (card.dataset.name||'').includes(q) || (card.dataset.spec||'').includes(q);
+      card.classList.toggle('hidden', !match);
+      if (match) vis++;
+    });
+    sec.classList.toggle('hidden', vis === 0);
+    total += vis;
+  });
+  noResults.style.display = total === 0 ? 'block' : 'none';
+  if (q) { const e = total===1?'':total<5?'а':'ов'; searchCount.textContent = total===0?'':`Найдено: ${total} специалист${e}`; }
+  else searchCount.textContent = '';
+}
+
+searchInput.addEventListener('input', filterCards);
+sideCats.forEach(b => b.addEventListener('click', () => setFilter(b.dataset.filter)));
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { document.getElementById('modal-overlay').classList.remove('open'); document.body.style.overflow=''; }});
+</script>
+</body>
+</html>
