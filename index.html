@@ -559,10 +559,6 @@
   <div class="modal" id="modal">
     <button class="modal-close" onclick="closeModal()">✕</button>
     <div class="modal-head">
-      <div class="modal-info" id="modal-info-block">
-        <span class="modal-info-label">Информация по специалисту:</span>
-        <div id="modal-info-text">Здесь будет описание или ссылка...</div>
-      </div>
       <div class="modal-avatar" id="m-avatar"></div>
       <div style="flex:1;min-width:0;">
         <div id="m-badge"></div>
@@ -570,6 +566,11 @@
         <div class="modal-contacts" id="m-contacts"></div>
       </div>
     </div>
+
+    <div class="modal-info" id="modal-info-block" style="border-top: 1px solid #eee; margin-top: 15px; padding-top: 15px; width: 100%;">
+        <span class="modal-info-label">Информация по специалисту:</span>
+        <div id="modal-info-text">Здесь будет описание или ссылка...</div>
+      </div>
     <div class="modal-comments">
       <div class="comments-title">Отзывы жильцов</div>
       <div class="comment-list" id="comment-list"></div>
