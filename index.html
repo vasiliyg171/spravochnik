@@ -563,7 +563,9 @@
       <div style="flex:1;min-width:0;">
         <div id="m-badge"></div>
         <div class="modal-name" id="m-name"></div>
-        <div class="modal-contacts" id="m-contacts"></div>
+        <div class="modal-contacts-row" style="display: flex; align-items: baseline; gap: 10px;">
+    <div class="modal-contacts" id="m-contacts" style="color: #d9534f; font-weight: bold; font-size: 1.2em;"></div>
+    <span style="color: #888; font-size: 14px; font-style: italic;">запись на прием</span>
       </div>
     </div>
 
@@ -631,7 +633,7 @@ function openModal(id) {
   if (s.note)   contacts += `<span class="modal-note">${s.note}</span>`;
   if (s.address)contacts += `<div class="modal-address">📍 ${s.address}</div>`;
   if (s.hours)  contacts += `<div class="modal-hours">🕐 ${s.hours}</div>`;
-  document.getElementById('m-contacts').innerHTML = (s.phone || '') + ' <span style="color: #888; font-size: 14px; font-style: italic; margin-left: 10px;">запись на прием</span>';
+  ocument.getElementById('m-contacts').innerText = s.phone || '';
   renderComments(id);
   document.getElementById('comment-author').value = '';
   document.getElementById('comment-text').value = '';
