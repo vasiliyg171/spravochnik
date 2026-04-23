@@ -569,7 +569,7 @@
 
     <div class="modal-info" id="modal-info-block" style="border-top: 1px solid #eee; margin-top: 15px; padding-top: 15px; width: 100%;">
         <span class="modal-info-label">Информация по специалисту:</span>
-        <div id="modal-info-text">Здесь будет описание или ссылка...</div>
+        <div id="modal-info-text" style="color: #888; font-style: italic; margin-top: 5px;">Здесь будет описание или ссылка...</div>
       </div>
     <div class="modal-comments">
       <div class="comments-title">Отзывы жильцов</div>
@@ -631,7 +631,7 @@ function openModal(id) {
   if (s.note)   contacts += `<span class="modal-note">${s.note}</span>`;
   if (s.address)contacts += `<div class="modal-address">📍 ${s.address}</div>`;
   if (s.hours)  contacts += `<div class="modal-hours">🕐 ${s.hours}</div>`;
-  document.getElementById('m-contacts').innerHTML = contacts;
+  document.getElementById('m-contacts').innerHTML = p.phone + ' <span style="color: #888; font-size: 14px; font-style: italic; margin-left: 10px;">запись на прием</span>';
 
   renderComments(id);
   document.getElementById('comment-author').value = '';
