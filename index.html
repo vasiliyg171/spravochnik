@@ -776,26 +776,25 @@ sideCats.forEach(b => b.addEventListener('click', () => setFilter(b.dataset.filt
 document.addEventListener('keydown', e => { if (e.key === 'Escape') { document.getElementById('modal-overlay').classList.remove('open'); document.body.style.overflow=''; }});
 
   function showModal(id) {
-        const p = data.find(item => item.id === id);
-        if (p) {
-            document.getElementById('m-name').innerText = p.name;
-            document.getElementById('m-badge').innerText = p.specialty;
+    const p = data.find(item => item.id === id);
+    if (p) {
+        document.getElementById('m-name').innerText = p.name;
+        document.getElementById('m-badge').innerText = p.specialty;
 
-            // Находим ссылку телефона
-            const phoneLink = document.getElementById('m-contacts-link');
-            if (p.phone) {
-                phoneLink.innerText = p.phone; /* Показываем номер красиво: +7 (909) */
-                /* Очищаем номер от скобок и тире, чтобы телефон понял его как 'tel:+7909... */
-                phoneLink.href = 'tel:' + p.phone.replace(/\D/g, ''); 
-                phoneLink.style.display = 'inline';
-            } else {
-                phoneLink.style.display = 'none';
-            }
-            document.getElementById('modal-info-text').innerHTML = p.info || 'Информация уточняется';
-            document.getElementById('modal-overlay').classList.add('open');
-            document.body.style.overflow = 'hidden';
+        const phoneLink = document.getElementById('m-contacts-link');
+        if (p.phone) {
+            phoneLink.innerText = p.phone;
+            phoneLink.href = 'tel:' + p.phone.replace(/\D/g, ''); 
+            phoneLink.style.display = 'inline';
+        } else {
+            phoneLink.style.display = 'none';
         }
+
+        document.getElementById('modal-info-text').innerHTML = p.info || 'Информация уточняется';
+        document.getElementById('modal-overlay').classList.add('open');
+        document.body.style.overflow = 'hidden';
     }
+}
     function closeModal() {
         document.getElementById('modal-overlay').classList.remove('open');
         document.body.style.overflow = '';
