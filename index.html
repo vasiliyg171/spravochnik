@@ -793,30 +793,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') { document.g
       }
     }
   });
-  // Функция открытия модального окна
-  function showModal(id) {
-    const p = data.find(item => item.id === id);
-    
-    if (p) {
-        document.getElementById('modal-name').innerText = p.name;
-        document.getElementById('m-badge').innerText = p.specialty;
-
-        const phoneLink = document.getElementById('m-contacts-link');
-        if (p.phone) {
-            phoneLink.innerText = p.phone;
-            phoneLink.href = 'tel:' + p.phone.replace(/\D/g, ''); 
-            phoneLink.style.display = 'inline';
-        } else {
-            phoneLink.style.display = 'none';
-        }
-
-        document.getElementById('modal-info-text').innerHTML = p.info || 'Информация уточняется';
-        
-        document.getElementById('modal-overlay').classList.add('open');
-        document.body.style.overflow = 'hidden';
-      }
-  }
-
+ 
   // Функция закрытия
   function closeModal() {
       document.getElementById('modal-overlay').classList.remove('open');
