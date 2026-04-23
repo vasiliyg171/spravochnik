@@ -631,7 +631,7 @@ function openModal(id) {
   if (s.note)   contacts += `<span class="modal-note">${s.note}</span>`;
   if (s.address)contacts += `<div class="modal-address">📍 ${s.address}</div>`;
   if (s.hours)  contacts += `<div class="modal-hours">🕐 ${s.hours}</div>`;
-  document.getElementById('m-contacts').innerHTML = p.phone + ' <span style="color: #888; font-size: 14px; font-style: italic; margin-left: 10px;">запись на прием</span>';
+  document.getElementById('m-contacts').innerHTML = (s.phone || '') + ' <span style="color: #888; font-size: 14px; font-style: italic; margin-left: 10px;">запись на прием</span>';
   renderComments(id);
   document.getElementById('comment-author').value = '';
   document.getElementById('comment-text').value = '';
