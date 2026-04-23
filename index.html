@@ -558,21 +558,26 @@
 <div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
   <div class="modal" id="modal">
     <button class="modal-close" onclick="closeModal()">✕</button>
+    
     <div class="modal-head">
       <div class="modal-avatar" id="m-avatar"></div>
-      <div style="flex:1;min-width:0;">
+      <div style="flex:1; min-width:0;">
         <div id="m-badge"></div>
         <div class="modal-name" id="m-name"></div>
+        <!-- Строка с телефоном и надписью -->
         <div class="modal-contacts-row" style="display: flex; align-items: baseline; gap: 10px;">
-    <div class="modal-contacts" id="m-contacts" style="color: #d9534f; font-weight: bold; font-size: 1.2em;"></div>
-    <span style="color: #888; font-size: 14px; font-style: italic;">запись на прием</span>
+          <div class="modal-contacts" id="m-contacts" style="color: #d9534f; font-weight: bold; font-size: 1.2em;"></div>
+          <span style="color: #888; font-size: 14px; font-style: italic;">запись на прием</span>
+        </div>
       </div>
     </div>
 
+    <!-- Блок информации с серой линией -->
     <div class="modal-info" id="modal-info-block" style="border-top: 1px solid #eee; margin-top: 15px; padding-top: 15px; width: 100%;">
-        <span class="modal-info-label">Информация по специалисту:</span>
-        <div id="modal-info-text" style="color: #888; font-style: italic; margin-top: 5px;">Здесь будет описание или ссылка...</div>
-      </div>
+      <span class="modal-info-label">ИНФОРМАЦИЯ ПО СПЕЦИАЛИСТУ:</span>
+      <div id="modal-info-text" style="color: #888; font-style: italic; margin-top: 5px;">Здесь будет описание или ссылка...</div>
+    </div>
+
     <div class="modal-comments">
       <div class="comments-title">Отзывы жильцов</div>
       <div class="comment-list" id="comment-list"></div>
@@ -586,6 +591,7 @@
     </div>
   </div>
 </div>
+
 
 <script>
 const specialists = {
