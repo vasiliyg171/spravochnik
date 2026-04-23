@@ -170,7 +170,6 @@
     position: fixed; 
     inset: 0; 
     z-index: 200; /* Поверх всех элементов */
-         
     /* Отвечает за то, где именно внутри этого слоя появится карточка врача. */
     align-items: flex-start;
     justify-content: center;
@@ -572,7 +571,7 @@
         <div class="modal-name" id="m-name"></div>
         <!-- Строка с телефоном и надписью -->
         <div class="modal-contacts-row" style="display: flex; align-items: baseline; gap: 10px;">
-          <div class="modal-contacts" id="m-contacts" style="color: #d9534f; font-weight: bold; font-size: 1.2em;"></div>
+          <a href="#" id="m-contacts-link" style="color: #d9534f; font-weight: bold; font-size: 1.2em; text-decoration: none;"></a>
           <span style="color: #888; font-size: 14px; font-style: italic;">запись на прием</span>
         </div>
       </div>
@@ -785,8 +784,8 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') { document.g
             // Находим ссылку телефона
             const phoneLink = document.getElementById('m-contacts-link');
             if (p.phone) {
-                phoneLink.innerText = p.phone;
-                // Убираем лишние символы из номера для корректного вызова
+                phoneLink.innerText = p.phone; /* Показываем номер красиво: +7 (909) */
+                /* Очищаем номер от скобок и тире, чтобы телефон понял его как 'tel:+7909... */
                 phoneLink.href = 'tel:' + p.phone.replace(/\D/g, ''); 
                 phoneLink.style.display = 'inline';
             } else {
