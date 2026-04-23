@@ -783,7 +783,6 @@ searchInput.addEventListener('input', filterCards);
 sideCats.forEach(b => b.addEventListener('click', () => setFilter(b.dataset.filter)));
 document.addEventListener('keydown', e => { if (e.key === 'Escape') { document.getElementById('modal-overlay').classList.remove('open'); document.body.style.overflow=''; }});
 
-<script>
   // Закрытие по кнопке Escape
   document.addEventListener('keydown', e => { 
     if (e.key === 'Escape') { 
@@ -794,7 +793,6 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') { document.g
       }
     }
   });
-
   // Функция открытия модального окна
   function showModal(id) {
     const p = data.find(item => item.id === id);
