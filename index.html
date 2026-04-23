@@ -639,7 +639,7 @@ function openModal(id) {
   if (s.note)   contacts += `<span class="modal-note">${s.note}</span>`;
   if (s.address)contacts += `<div class="modal-address">📍 ${s.address}</div>`;
   if (s.hours)  contacts += `<div class="modal-hours">🕐 ${s.hours}</div>`;
-  ocument.getElementById('m-contacts').innerText = s.phone || '';
+  document.getElementById('m-contacts').innerText = s.phone || '';
   renderComments(id);
   document.getElementById('comment-author').value = '';
   document.getElementById('comment-text').value = '';
